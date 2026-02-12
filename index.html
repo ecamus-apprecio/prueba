@@ -1,272 +1,161 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bitácora de Feedback</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bitácora de Feedback</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet"/>
 
-  <style>
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: #f9f9f9;
-      padding: 40px 0;
-    }
-    .container {
-      max-width: 780px;
-      background: #fff;
-      margin: auto;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,.08);
-    }
-    .logo {
-      display: block;
-      margin: 0 auto 20px;
-      max-width: 180px;
-    }
-    h1 {
-      color: #fa345e;
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 26px;
-    }
-    .subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 30px;
-      font-size: 14px;
-    }
-    label {
-      display: block;
-      margin: 16px 0 6px;
-      font-weight: 600;
-      color: #222;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-    select { background-color: #fef2f3; }
-    textarea { resize: vertical; min-height: 90px; }
-    button {
-      background-color: #fa345e;
-      color: white;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 24px;
-      width: 100%;
-    }
-    .block {
-      border: 1px solid #eee;
-      border-radius: 12px;
-      padding: 18px;
-      margin-top: 18px;
-      background: #fff;
-    }
-    .q-title {
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: #222;
-    }
-    .scale {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .scale label {
-      margin: 0;
-      font-weight: 600;
-      font-size: 12px;
-      text-align: center;
-      background: #f7f7f7;
-      border: 1px solid #eee;
-      border-radius: 10px;
-      padding: 10px 6px;
-      cursor: pointer;
-    }
-    .scale input { display: none; }
-    .scale input:checked + span {
-      display: block;
-      background: #fa345e;
-      color: #fff;
-      border-radius: 8px;
-      padding: 8px 0;
-    }
-    .scale label span {
-      display: block;
-      padding: 8px 0;
-      border-radius: 8px;
-    }
-    .error {
-      background: #fff3cd;
-      border: 1px solid #ffeeba;
-      color: #856404;
-      border-radius: 8px;
-      padding: 10px;
-      margin-top: 12px;
-      display: none;
-      font-size: 13px;
-    }
-  </style>
+<style>
+body { font-family:'Montserrat',sans-serif; background:#f9f9f9; padding:40px 0; }
+.container { max-width:780px; background:#fff; margin:auto; padding:40px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,.08); }
+.logo { display:block; margin:0 auto 20px; max-width:180px; }
+h1 { color:#fa345e; text-align:center; margin-bottom:10px; font-size:26px; }
+.subtitle { text-align:center; color:#666; margin-bottom:30px; font-size:14px; }
+label { display:block; margin:16px 0 6px; font-weight:600; color:#222; }
+input, select, textarea { width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:14px; }
+select { background:#fef2f3; }
+textarea { resize:vertical; min-height:90px; }
+button { background:#fa345e; color:white; border:none; padding:12px 18px; border-radius:8px; font-size:16px; cursor:pointer; margin-top:24px; width:100%; }
+.block { border:1px solid #eee; border-radius:12px; padding:18px; margin-top:18px; background:#fff; }
+.q-title { font-weight:600; margin-bottom:10px; }
+.scale { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:10px; }
+.scale label { margin:0; font-weight:600; font-size:12px; text-align:center; background:#f7f7f7; border:1px solid #eee; border-radius:10px; padding:10px 6px; cursor:pointer; }
+.scale input { display:none; }
+.scale input:checked + span { display:block; background:#fa345e; color:#fff; border-radius:8px; padding:8px 0; }
+.scale span { display:block; padding:8px 0; border-radius:8px; }
+.error { background:#fff3cd; border:1px solid #ffeeba; color:#856404; border-radius:8px; padding:10px; margin-top:12px; display:none; font-size:13px; }
+</style>
 </head>
 
 <body>
 <div class="container">
-  <img src="https://estudios.apprecio.com/hubfs/logos/Apprecio-logo-rojo.png" class="logo" />
-  <h1>Bitácora de Feedback</h1>
-  <div class="subtitle">
-    Registro interno para trazabilidad de feedback (no es conversación, es evidencia de gestión).
-  </div>
 
-  <form id="bitacoraForm" method="POST" action="https://n8n.openip.cl/webhook/Bitácora">
+<img src="https://estudios.apprecio.com/hubfs/logos/Apprecio-logo-rojo.png" class="logo"/>
+<h1>Bitácora de Feedback</h1>
+<div class="subtitle">Registro interno para trazabilidad de feedback.</div>
 
-    <!-- IDENTIFICACIÓN -->
-    <label>Líder</label>
-    <select id="liderSelect" name="lider" required>
-      <option value="">Cargando líderes...</option>
-    </select>
+<form id="bitacoraForm" method="POST" action="https://n8n.openip.cl/webhook/Bitácora">
 
-    <label>Colaborador</label>
-    <select id="colaboradorSelect" name="colaborador" required disabled>
-      <option value="">Selecciona un líder primero</option>
-    </select>
+<label>Líder</label>
+<select id="liderSelect" name="lider" required>
+<option value="">Cargando líderes...</option>
+</select>
 
-    <label>Gerencia (automático)</label>
-    <input id="gerenciaInput" name="gerencia" readonly placeholder="Se completa automáticamente" />
+<label>Colaborador</label>
+<select id="colaboradorSelect" name="colaborador" required disabled>
+<option value="">Selecciona un líder primero</option>
+</select>
 
-    <label>Fecha</label>
-    <input type="date" id="fecha" name="fecha" required />
+<label>Gerencia (automático)</label>
+<input id="gerenciaInput" name="gerencia" readonly />
 
-    <hr />
+<label>Fecha</label>
+<input type="date" id="fecha" name="fecha" required />
 
-    <!-- PREGUNTAS -->
-    <div id="preguntas"></div>
+<hr>
 
-    <label>Comentarios (opcional)</label>
-    <textarea name="comentarios" placeholder="Contexto, ejemplos, acuerdos, próximos pasos…"></textarea>
+<div id="preguntas"></div>
 
-    <div class="error" id="errorBox"></div>
+<label>Comentarios (opcional)</label>
+<textarea name="comentarios"></textarea>
 
-    <button type="submit">Enviar bitácora</button>
-  </form>
+<div id="errorBox" class="error"></div>
+
+<button type="submit">Enviar bitácora</button>
+</form>
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", function(){
+
 const BASE_URL = "https://n8n.openip.cl/webhook/basecolaboradores";
-
-const PREGUNTAS = [
-  { id: "p1", texto: "Hace seguimiento a mis compromisos hasta cerrar lo encomendado." },
-  { id: "p2", texto: "Actúa con urgencia y prolijidad para cumplir lo comprometido." },
-  { id: "p3", texto: "Mantiene estándares (calidad, plazos, cumplimiento de normas)." },
-  { id: "p4", texto: "Prioriza y optimiza recursos/tiempo para llegar (y ojalá superar) el objetivo." },
-  { id: "p5", texto: "Mejora procesos y propone soluciones que agregan valor." },
-  { id: "p6", texto: "Se adapta a cambios sin perder foco en objetivos." },
-  { id: "p7", texto: "Construye relaciones de largo plazo para resolver necesidades del cliente." },
-  { id: "p8", texto: "Muestra interés genuino por entender y resolver." },
-  { id: "p9", texto: "Trabaja inter-área para que la experiencia del cliente sea fluida." }
-];
-
-const ESCALA = [1,2,3,4,5];
-
 const liderSelect = document.getElementById("liderSelect");
 const colabSelect = document.getElementById("colaboradorSelect");
 const gerenciaInput = document.getElementById("gerenciaInput");
 const errorBox = document.getElementById("errorBox");
 
-function showError(msg){
-  errorBox.textContent = msg;
-  errorBox.style.display = "block";
-}
+const PREGUNTAS = [
+{ id:"p1", texto:"Hace seguimiento a mis compromisos hasta cerrar lo encomendado." },
+{ id:"p2", texto:"Actúa con urgencia y prolijidad para cumplir lo comprometido." },
+{ id:"p3", texto:"Mantiene estándares (calidad, plazos, cumplimiento de normas)." },
+{ id:"p4", texto:"Prioriza y optimiza recursos para llegar al objetivo." },
+{ id:"p5", texto:"Mejora procesos y propone soluciones que agregan valor." },
+{ id:"p6", texto:"Se adapta a cambios sin perder foco en objetivos." },
+{ id:"p7", texto:"Construye relaciones de largo plazo con clientes internos/externos." },
+{ id:"p8", texto:"Muestra interés genuino por entender y resolver." },
+{ id:"p9", texto:"Trabaja inter-área para que la experiencia sea fluida." }
+];
 
 function setToday(){
-  const today = new Date().toISOString().split("T")[0];
-  document.getElementById("fecha").value = today;
+document.getElementById("fecha").value = new Date().toISOString().split("T")[0];
 }
 
 function renderPreguntas(){
-  const cont = document.getElementById("preguntas");
-  cont.innerHTML = "";
-
-  PREGUNTAS.forEach((p, i) => {
-    const block = document.createElement("div");
-    block.className = "block";
-
-    block.innerHTML = `
-      <div class="q-title">${i+1}. ${p.texto}</div>
-      <div class="scale">
-        ${ESCALA.map(v => `
-          <label>
-            <input type="radio" name="respuestas[${p.id}]" value="${v}" required />
-            <span>${v}</span>
-          </label>
-        `).join("")}
-      </div>
-    `;
-
-    cont.appendChild(block);
-  });
+const cont = document.getElementById("preguntas");
+PREGUNTAS.forEach((p,i)=>{
+const block = document.createElement("div");
+block.className="block";
+block.innerHTML = `
+<div class="q-title">${i+1}. ${p.texto}</div>
+<div class="scale">
+${[1,2,3,4,5].map(v=>`
+<label>
+<input type="radio" name="respuestas[${p.id}]" value="${v}" required>
+<span>${v}</span>
+</label>`).join("")}
+</div>`;
+cont.appendChild(block);
+});
 }
 
-// Cargar líderes
 async function cargarLideres(){
-  try{
-    const res = await fetch(`${BASE_URL}?modo=lideres`);
-    const data = await res.json();
-
-    liderSelect.innerHTML =
-      `<option value="">Selecciona</option>` +
-      data.lideres.map(l => `<option value="${l}">${l}</option>`).join("");
-
-  }catch(err){
-    showError("Error cargando líderes.");
-  }
+try{
+const res = await fetch(`${BASE_URL}?modo=lideres`);
+const data = await res.json();
+liderSelect.innerHTML =
+`<option value="">Selecciona</option>` +
+(data.lideres || []).map(l=>`<option value="${l}">${l}</option>`).join("");
+}catch(e){
+errorBox.style.display="block";
+errorBox.textContent="Error cargando líderes.";
+}
 }
 
-// Cuando cambia líder → traer colaboradores
-liderSelect.addEventListener("change", async e=>{
-  const lider = e.target.value;
-  colabSelect.disabled = true;
-  gerenciaInput.value = "";
+liderSelect.addEventListener("change", async function(){
+const lider = this.value;
+colabSelect.disabled=true;
+gerenciaInput.value="";
+if(!lider) return;
 
-  if(!lider) return;
-
-  try{
-    const res = await fetch(`${BASE_URL}?modo=colaboradores&lider=${encodeURIComponent(lider)}`);
-    const data = await res.json();
-
-    colabSelect.innerHTML =
-      `<option value="">Selecciona</option>` +
-      data.colaboradores.map(c =>
-        `<option value="${c.nombre}" data-gerencia="${c.gerencia || ""}">
-          ${c.nombre}
-        </option>`
-      ).join("");
-
-    colabSelect.disabled = false;
-
-  }catch(err){
-    showError("Error cargando colaboradores.");
-  }
+try{
+const res = await fetch(`${BASE_URL}?modo=colaboradores&lider=${encodeURIComponent(lider)}`);
+const data = await res.json();
+colabSelect.innerHTML =
+`<option value="">Selecciona</option>` +
+(data.colaboradores || []).map(c=>
+`<option value="${c.nombre}" data-gerencia="${c.gerencia||""}">
+${c.nombre}
+</option>`).join("");
+colabSelect.disabled=false;
+}catch(e){
+errorBox.style.display="block";
+errorBox.textContent="Error cargando colaboradores.";
+}
 });
 
-// Autocompletar gerencia
-colabSelect.addEventListener("change", e=>{
-  const opt = e.target.selectedOptions[0];
-  gerenciaInput.value = opt ? (opt.dataset.gerencia || "") : "";
+colabSelect.addEventListener("change", function(){
+const opt = this.selectedOptions[0];
+gerenciaInput.value = opt ? opt.dataset.gerencia || "" : "";
 });
 
 setToday();
-renderPreguntas();
+renderPreguntas();   // 👈 aquí se renderizan siempre
 cargarLideres();
+
+});
 </script>
 </body>
 </html>
