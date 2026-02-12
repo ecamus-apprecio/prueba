@@ -51,13 +51,8 @@
       border-radius: 8px;
       font-size: 14px;
     }
-    select {
-      background-color: #fef2f3;
-    }
-    textarea {
-      resize: vertical;
-      min-height: 90px;
-    }
+    select { background-color: #fef2f3; }
+    textarea { resize: vertical; min-height: 90px; }
     button {
       background-color: #fa345e;
       color: white;
@@ -97,11 +92,8 @@
       border-radius: 10px;
       padding: 10px 6px;
       cursor: pointer;
-      user-select: none;
     }
-    .scale input {
-      display: none;
-    }
+    .scale input { display: none; }
     .scale input:checked + span {
       display: block;
       background: #fa345e;
@@ -114,11 +106,6 @@
       padding: 8px 0;
       border-radius: 8px;
     }
-    .small-note {
-      color: #777;
-      font-size: 12px;
-      margin-top: 6px;
-    }
     .error {
       background: #fff3cd;
       border: 1px solid #ffeeba;
@@ -129,163 +116,159 @@
       display: none;
       font-size: 13px;
     }
-    .success {
-      background: #eaf7ea;
-      border: 1px solid #cfe9cf;
-      color: #256b25;
-      border-radius: 8px;
-      padding: 10px;
-      margin-top: 12px;
-      display: none;
-      font-size: 13px;
-    }
-    hr {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 26px 0;
-    }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <img src="https://estudios.apprecio.com/hubfs/logos/Apprecio-logo-rojo.png" class="logo" />
-    <h1>Bitácora de Feedback</h1>
-    <div class="subtitle">Registro interno para trazabilidad de feedback (no es conversación, es evidencia de gestión).</div>
-
-    <form id="bitacoraForm" method="POST" action="https://n8n.openip.cl/webhook/Bitácora">
-      <!-- Identificación -->
-      <label>Líder</label>
-      <select id="liderSelect" name="lider" required>
-        <option value="">Cargando líderes...</option>
-      </select>
-
-      <label>Colaborador</label>
-      <select id="colaboradorSelect" name="colaborador" required disabled>
-        <option value="">Selecciona un líder primero</option>
-      </select>
-
-      <label>Gerencia (auto)</label>
-      <input id="gerenciaInput" name="gerencia" readonly placeholder="Se completa automáticamente" />
-
-      <div class="small-note">
-        La lista de líderes/colaboradores se carga desde: <b>/webhook/basecolaboradores</b>.
-      </div>
-
-      <hr />
-
-      <!-- Preguntas -->
-      <div id="preguntas"></div>
-
-      <label>Comentarios (opcional)</label>
-      <textarea name="comentarios" placeholder="Contexto, ejemplos, acuerdos, próximos pasos…"></textarea>
-
-      <!-- Puedes incluir fecha si quieres (por defecto hoy) -->
-      <label>Fecha</label>
-      <input type="date" id="fecha" name="fecha" required />
-
-      <div class="error" id="errorBox"></div>
-      <div class="success" id="successBox"></div>
-
-      <button type="submit">Enviar bitácora</button>
-    </form>
+<div class="container">
+  <img src="https://estudios.apprecio.com/hubfs/logos/Apprecio-logo-rojo.png" class="logo" />
+  <h1>Bitácora de Feedback</h1>
+  <div class="subtitle">
+    Registro interno para trazabilidad de feedback (no es conversación, es evidencia de gestión).
   </div>
 
+  <form id="bitacoraForm" method="POST" action="https://n8n.openip.cl/webhook/Bitácora">
+
+    <!-- IDENTIFICACIÓN -->
+    <label>Líder</label>
+    <select id="liderSelect" name="lider" required>
+      <option value="">Cargando líderes...</option>
+    </select>
+
+    <label>Colaborador</label>
+    <select id="colaboradorSelect" name="colaborador" required disabled>
+      <option value="">Selecciona un líder primero</option>
+    </select>
+
+    <label>Gerencia (automático)</label>
+    <input id="gerenciaInput" name="gerencia" readonly placeholder="Se completa automáticamente" />
+
+    <label>Fecha</label>
+    <input type="date" id="fecha" name="fecha" required />
+
+    <hr />
+
+    <!-- PREGUNTAS -->
+    <div id="preguntas"></div>
+
+    <label>Comentarios (opcional)</label>
+    <textarea name="comentarios" placeholder="Contexto, ejemplos, acuerdos, próximos pasos…"></textarea>
+
+    <div class="error" id="errorBox"></div>
+
+    <button type="submit">Enviar bitácora</button>
+  </form>
+</div>
+
 <script>
-  const BASE_URL = "https://n8n.openip.cl/webhook/basecolaboradores";
+const BASE_URL = "https://n8n.openip.cl/webhook/basecolaboradores";
 
-  const liderSelect = document.getElementById("liderSelect");
-  const colabSelect = document.getElementById("colaboradorSelect");
-  const gerenciaInput = document.getElementById("gerenciaInput");
+const PREGUNTAS = [
+  { id: "p1", texto: "Hace seguimiento a mis compromisos hasta cerrar lo encomendado." },
+  { id: "p2", texto: "Actúa con urgencia y prolijidad para cumplir lo comprometido." },
+  { id: "p3", texto: "Mantiene estándares (calidad, plazos, cumplimiento de normas)." },
+  { id: "p4", texto: "Prioriza y optimiza recursos/tiempo para llegar (y ojalá superar) el objetivo." },
+  { id: "p5", texto: "Mejora procesos y propone soluciones que agregan valor." },
+  { id: "p6", texto: "Se adapta a cambios sin perder foco en objetivos." },
+  { id: "p7", texto: "Construye relaciones de largo plazo para resolver necesidades del cliente." },
+  { id: "p8", texto: "Muestra interés genuino por entender y resolver." },
+  { id: "p9", texto: "Trabaja inter-área para que la experiencia del cliente sea fluida." }
+];
 
-  const errorBox = document.getElementById("errorBox");
+const ESCALA = [1,2,3,4,5];
 
-  function showError(msg) {
-    errorBox.textContent = msg;
-    errorBox.style.display = "block";
-  }
+const liderSelect = document.getElementById("liderSelect");
+const colabSelect = document.getElementById("colaboradorSelect");
+const gerenciaInput = document.getElementById("gerenciaInput");
+const errorBox = document.getElementById("errorBox");
 
-  function clearError() {
-    errorBox.style.display = "none";
-  }
+function showError(msg){
+  errorBox.textContent = msg;
+  errorBox.style.display = "block";
+}
 
-  // ===============================
-  // 1️⃣ CARGAR LÍDERES
-  // ===============================
-  async function cargarLideres() {
-    try {
-      const res = await fetch(`${BASE_URL}?modo=lideres`);
-      const data = await res.json();
+function setToday(){
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("fecha").value = today;
+}
 
-      if (!data.lideres) throw new Error("Respuesta inválida");
+function renderPreguntas(){
+  const cont = document.getElementById("preguntas");
+  cont.innerHTML = "";
 
-      liderSelect.innerHTML =
-        `<option value="">Selecciona</option>` +
-        data.lideres
-          .map(l => `<option value="${l}">${l}</option>`)
-          .join("");
+  PREGUNTAS.forEach((p, i) => {
+    const block = document.createElement("div");
+    block.className = "block";
 
-    } catch (err) {
-      showError("Error cargando líderes desde n8n.");
-      console.error(err);
-    }
-  }
+    block.innerHTML = `
+      <div class="q-title">${i+1}. ${p.texto}</div>
+      <div class="scale">
+        ${ESCALA.map(v => `
+          <label>
+            <input type="radio" name="respuestas[${p.id}]" value="${v}" required />
+            <span>${v}</span>
+          </label>
+        `).join("")}
+      </div>
+    `;
 
-  // ===============================
-  // 2️⃣ CUANDO CAMBIA EL LÍDER
-  // ===============================
-  liderSelect.addEventListener("change", async (e) => {
-    clearError();
-    const lider = e.target.value;
-
-    colabSelect.innerHTML = `<option value="">Cargando...</option>`;
-    colabSelect.disabled = true;
-    gerenciaInput.value = "";
-
-    if (!lider) return;
-
-    try {
-      const res = await fetch(
-        `${BASE_URL}?modo=colaboradores&lider=${encodeURIComponent(lider)}`
-      );
-
-      const data = await res.json();
-
-      if (!data.colaboradores)
-        throw new Error("No vienen colaboradores");
-
-      colabSelect.innerHTML =
-        `<option value="">Selecciona</option>` +
-        data.colaboradores
-          .map(
-            c =>
-              `<option value="${c.nombre}" data-gerencia="${c.gerencia || ""}">
-                ${c.nombre}
-              </option>`
-          )
-          .join("");
-
-      colabSelect.disabled = false;
-
-    } catch (err) {
-      showError("Error cargando colaboradores.");
-      console.error(err);
-    }
+    cont.appendChild(block);
   });
+}
 
-  // ===============================
-  // 3️⃣ AUTOCOMPLETAR GERENCIA
-  // ===============================
-  colabSelect.addEventListener("change", (e) => {
-    const opt = e.target.selectedOptions[0];
-    gerenciaInput.value = opt ? (opt.dataset.gerencia || "") : "";
-  });
+// Cargar líderes
+async function cargarLideres(){
+  try{
+    const res = await fetch(`${BASE_URL}?modo=lideres`);
+    const data = await res.json();
 
-  // ===============================
-  // INIT
-  // ===============================
-  cargarLideres();
+    liderSelect.innerHTML =
+      `<option value="">Selecciona</option>` +
+      data.lideres.map(l => `<option value="${l}">${l}</option>`).join("");
+
+  }catch(err){
+    showError("Error cargando líderes.");
+  }
+}
+
+// Cuando cambia líder → traer colaboradores
+liderSelect.addEventListener("change", async e=>{
+  const lider = e.target.value;
+  colabSelect.disabled = true;
+  gerenciaInput.value = "";
+
+  if(!lider) return;
+
+  try{
+    const res = await fetch(`${BASE_URL}?modo=colaboradores&lider=${encodeURIComponent(lider)}`);
+    const data = await res.json();
+
+    colabSelect.innerHTML =
+      `<option value="">Selecciona</option>` +
+      data.colaboradores.map(c =>
+        `<option value="${c.nombre}" data-gerencia="${c.gerencia || ""}">
+          ${c.nombre}
+        </option>`
+      ).join("");
+
+    colabSelect.disabled = false;
+
+  }catch(err){
+    showError("Error cargando colaboradores.");
+  }
+});
+
+// Autocompletar gerencia
+colabSelect.addEventListener("change", e=>{
+  const opt = e.target.selectedOptions[0];
+  gerenciaInput.value = opt ? (opt.dataset.gerencia || "") : "";
+});
+
+setToday();
+renderPreguntas();
+cargarLideres();
 </script>
-
 </body>
 </html>
+
+
